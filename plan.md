@@ -1,0 +1,4 @@
+
+
+## Calendario de disponibilidad con clases asignadas — 5 de noviembre de 2026
+El calendario del tutor consulta simultáneamente sus reglas de disponibilidad y sus sesiones mediante los endpoints protegidos existentes. Las sesiones programadas o en curso se proyectan sobre el día y la hora locales correspondientes, se muestran como franjas «Ocupada» y se excluyen del cálculo de horas disponibles; las franjas libres se fragmentan alrededor de la clase sin perder los modales de detalle de los horarios guardados. La reserva limita sus opciones de duración a horas completas y el backend valida que el intervalo persistido también sea entero. Las páginas autenticadas ya no muestran la barra de búsqueda superior y el avatar lateral conserva sus iniciales centradas mediante una regla CSS específica.

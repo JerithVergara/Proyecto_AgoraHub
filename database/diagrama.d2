@@ -1,0 +1,103 @@
+direction: right
+
+classes: {
+  style.fill: "#F6F8FC"
+  style.stroke: "#CBD5E1"
+  style.border-radius: 18
+}
+
+identity: Identidad y perfiles {
+  users: "users\n(id, email, full_name, status)"
+  roles: "roles\n(id, code)"
+  user_roles: "user_roles\n(user_id, role_id)"
+  student_profiles: "student_profiles\n(user_id, education_level)"
+  tutor_profiles: "tutor_profiles\n(user_id, hourly_rate, modality, rating)"
+  user_sessions: "user_sessions\n(token_hash, expires_at)"
+
+  users -> user_roles: asigna
+  roles -> user_roles: define
+  users -> student_profiles: perfil
+  users -> tutor_profiles: perfil
+  users -> user_sessions: autentica
+}
+
+catalogs: Catálogos y perfil profesional {
+  subjects: "subjects\n(id, name)"
+  levels: "education_levels\n(id, name)"
+  tutor_subjects: "tutor_subjects\n(tutor_id, subject_id)"
+  tutor_levels: "tutor_education_levels\n(tutor_id, level_id)"
+  badges: "tutor_badges\n(tutor_id, name)"
+  documents: "verification_documents\n(tutor_id, status)"
+  addresses: "user_addresses\n(user_id, city, area)"
+
+  tutor_profiles -> tutor_subjects: enseña
+  subjects -> tutor_subjects: materia
+  tutor_profiles -> tutor_levels: atiende
+  levels -> tutor_levels: nivel
+  tutor_profiles -> badges: obtiene
+  tutor_profiles -> documents: verifica
+  users -> addresses: registra
+}
+
+availability: Disponibilidad {
+  rules: "tutor_availability_rules\n(tutor_id, day, start, end)"
+  exceptions: "tutor_availability_exceptions\n(tutor_id, starts_at, ends_at)"
+
+  tutor_profiles -> rules: configura
+  tutor_profiles -> exceptions: bloquea / libera
+}
+
+marketplace: Solicitud y negociación {
+  requests: "tutoring_requests\n(student_id, subject_id, status, preferred_at)"
+  proposals: "tutoring_proposals\n(request_id, tutor_id, rate, status)"
+  messages: "negotiation_messages\n(request_id, sender_id, body)"
+
+  student_profiles -> requests: crea
+  subjects -> requests: solicita
+  levels -> requests: nivel
+  requests -> proposals: recibe
+  tutor_profiles -> proposals: responde
+  requests -> messages: conversa
+  users -> messages: envía
+}
+
+sessions: Tutorías y aula {
+  tutoring_sessions: "tutoring_sessions\n(student_id, tutor_id, starts_at, status)"
+  files: "session_files\n(session_id, storage_key)"
+  notes: "session_notes\n(session_id, author_id)"
+  checklist: "session_checklist_items\n(session_id, is_completed)"
+  reviews: "tutor_reviews\n(session_id, tutor_id, rating)"
+
+  proposals -> tutoring_sessions: confirma
+  student_profiles -> tutoring_sessions: participa
+  tutor_profiles -> tutoring_sessions: imparte
+  subjects -> tutoring_sessions: tema
+  tutoring_sessions -> files: adjunta
+  tutoring_sessions -> notes: documenta
+  tutoring_sessions -> checklist: prepara
+  tutoring_sessions -> reviews: recibe valoración
+  student_profiles -> reviews: califica
+}
+
+communication: Asistente IA {
+  conversations: "ai_conversations\n(student_id, title)"
+  ai_messages: "ai_messages\n(conversation_id, role, content)"
+
+  student_profiles -> conversations: abre
+  conversations -> ai_messages: contiene
+}
+
+identity.tutor_profiles -> catalogs.tutor_subjects
+identity.tutor_profiles -> availability.rules
+identity.student_profiles -> marketplace.requests
+marketplace.proposals -> sessions.tutoring_sessions
+sessions.tutoring_sessions -> communication.conversations: contexto opcional
+
+identity.style.fill: "#EEF4FF"
+identity.style.stroke: "#2563EB"
+marketplace.style.fill: "#F2F0FF"
+marketplace.style.stroke: "#7C3AED"
+sessions.style.fill: "#ECFDF5"
+sessions.style.stroke: "#16A37A"
+communication.style.fill: "#F2F0FF"
+communication.style.stroke: "#7C3AED"
